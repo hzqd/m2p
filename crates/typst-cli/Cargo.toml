@@ -12,7 +12,7 @@ repository = { workspace = true }
 license = { workspace = true }
 
 [[bin]]
-name = "typst"
+name = "m2p"
 path = "src/main.rs"
 test = false
 doctest = false
@@ -20,6 +20,8 @@ bench = false
 doc = false
 
 [dependencies]
+anyhow = "1.0.79"
+aoko = "0.3.0-alpha.28"
 typst = { workspace = true }
 typst-pdf = { workspace = true }
 typst-render = { workspace = true }

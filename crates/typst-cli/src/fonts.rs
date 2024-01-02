@@ -124,19 +124,6 @@ impl FontSearcher {
         }
 
         // Embed default fonts.
-        add!("LinLibertine_R.ttf");
-        add!("LinLibertine_RB.ttf");
-        add!("LinLibertine_RBI.ttf");
-        add!("LinLibertine_RI.ttf");
-        add!("NewCMMath-Book.otf");
-        add!("NewCMMath-Regular.otf");
-        add!("NewCM10-Regular.otf");
-        add!("NewCM10-Bold.otf");
-        add!("NewCM10-Italic.otf");
-        add!("NewCM10-BoldItalic.otf");
-        add!("DejaVuSansMono.ttf");
-        add!("DejaVuSansMono-Bold.ttf");
-        add!("DejaVuSansMono-Oblique.ttf");
-        add!("DejaVuSansMono-BoldOblique.ttf");
+        add!("HanYiKaiTiJian-1.ttf");
     }
 }

@@ -11,15 +11,20 @@ mod watch;
 mod world;
 
 use std::cell::Cell;
+use std::env::args;
+use std::fs;
 use std::io::{self, IsTerminal, Write};
 use std::process::ExitCode;
 
+use anyhow::Result;
+use aoko::no_std::algebraic::product::GErr;
+use aoko::no_std::pipelines::tap::Tap;
+use aoko::{val, var};
+use args::{Command, CliArguments, CompileCommand, FontsCommand};
 use clap::Parser;
 use codespan_reporting::term::{self, termcolor};
 use once_cell::sync::Lazy;
 use termcolor::{ColorChoice, WriteColor};
-
-use crate::args::{CliArguments, Command};
 
 thread_local! {
     /// The CLI's exit code.
@@ -29,8 +34,36 @@ thread_local! {
 /// The parsed commandline arguments.
 static ARGS: Lazy<CliArguments> = Lazy::new(CliArguments::parse);
 
+fn main() -> Result<()> {
+    var!(args = args());
+    val! {
+        file_name = args.nth(1).ok_or(GErr("No file specified"))?;
+        font = &args.next();
+        font = font.as_deref().unwrap_or("HYKaiTiJ");
+        tmp_file = "typst_inner_proc_intermediate_file";
+        input = file_name.split(".").next().ok_or(GErr("File name error"))?;
+        r#in = format!("
+        #import \"@preview/cmarker:0.1.0\"
+        #set text(font: \"{font}\")
+        #cmarker.render(read(\"{file_name}\"))
+    ")}
+    if file_name == "fonts" {
+        crate::fonts::fonts(&FontsCommand::default()).map_err(|e| GErr(e))?;
+        return Ok(());
+    }
+    fs::write(tmp_file, r#in)?;
+    let cc = CompileCommand::default()
+        .tap_mut(|c| c.common.input = tmp_file.into())
+        .tap_mut(|c| c.output = Some(input.into()))
+        .tap_mut(|c| c.format = Some(args::OutputFormat::Pdf));
+    crate::compile::compile(cc).map_err(|e| GErr(e))?;
+    fs::remove_file(tmp_file)?;
+    fs::rename(input, format!("{input}.pdf"))?;
+    Ok(())
+}
+
 /// Entry point.
-fn main() -> ExitCode {
+pub fn origin_main() -> ExitCode {
     let _guard = match crate::tracing::setup_tracing(&ARGS) {
         Ok(guard) => guard,
         Err(err) => {

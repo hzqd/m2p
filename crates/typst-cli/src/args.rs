@@ -51,7 +51,7 @@ pub enum Command {
 }
 
 /// Compiles an input file into a supported output format
-#[derive(Debug, Clone, Parser)]
+#[derive(Debug, Clone, Parser, Default)]
 pub struct CompileCommand {
     /// Shared arguments
     #[clap(flatten)]
@@ -108,7 +108,7 @@ pub enum SerializationFormat {
 }
 
 /// Common arguments of compile, watch, and query.
-#[derive(Debug, Clone, Args)]
+#[derive(Debug, Clone, Args, Default)]
 pub struct SharedArgs {
     /// Path to input Typst file
     pub input: PathBuf,
@@ -161,7 +161,7 @@ fn parse_input_pair(raw: &str) -> Result<(String, String), String> {
 }
 
 /// Lists all discovered fonts in system and custom font paths
-#[derive(Debug, Clone, Parser)]
+#[derive(Debug, Clone, Parser, Default)]
 pub struct FontsCommand {
     /// Adds additional directories to search for fonts
     #[clap(
@@ -178,8 +178,9 @@ pub struct FontsCommand {
 }
 
 /// Which format to use for diagnostics.
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, ValueEnum)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, ValueEnum, Default)]
 pub enum DiagnosticFormat {
+    #[default]
     Human,
     Short,
 }
