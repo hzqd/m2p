@@ -78,7 +78,7 @@ rayon = "1.7.0"
 regex = "1"
 resvg = { version = "0.37.0", default-features = false, features = ["raster-images"] }
 roxmltree = "0.19"
-rustls = "0.21" # in sync with ureq
+rustls = "0.22" # in sync with ureq
 rustls-pemfile = "1" # in sync with rustls
 rustybuzz = "0.12.1"
 same-file = "1"

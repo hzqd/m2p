@@ -19,14 +19,9 @@ static TLS_CONFIG: Lazy<Option<Arc<rustls::ClientConfig>>> = Lazy::new(|| {
     crate::ARGS
         .cert
         .as_ref()
-        .map(|path| {
-            let file = std::fs::OpenOptions::new().read(true).open(path)?;
-            let mut buffer = std::io::BufReader::new(file);
-            let certs = rustls_pemfile::certs(&mut buffer)?;
-            let mut store = rustls::RootCertStore::empty();
-            store.add_parsable_certificates(&certs);
+        .map(|_| {
+            let store = rustls::RootCertStore::empty();
             let config = rustls::ClientConfig::builder()
-                .with_safe_defaults()
                 .with_root_certificates(store)
                 .with_no_client_auth();
             Ok::<_, std::io::Error>(Arc::new(config))
